@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Juego Tablas</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #ffecd2, #fcb69f);
+        text-align: center;
+        padding: 30px;
+    }
+
+    .contenedor {
+        background: white;
+        max-width: 420px;
+        margin: auto;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+        color: #ff6f61;
+    }
+
+    .modo button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+    button {
+        padding: 10px 18px;
+        margin: 5px;
+        font-size: 16px;
+        background: #ff6f61;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .pregunta {
+        font-size: 26px;
+        margin: 20px 0;
+    }
+
+    input {
+        padding: 10px;
+        font-size: 20px;
+        width: 120px;
+        text-align: center;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .resultado {
+        margin-top: 15px;
+        font-size: 18px;
+        min-height: 24px;
+    }
+
+    .puntos {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .final {
+        font-size: 20px;
+        font-weight: bold;
+        color: #28a745;
+        margin-top: 15px;
+    }
+</style>
+</head>
+<body>
+
+<div class="contenedor">
+    <h1>🎯 Aprendete las Tablas Amor</h1>
+
+    <div class="modo">
+        <p>Elige el modo:</p>
+        <button id="btnFacil" onclick="setModo('facil')">👶 Fácil (1 al 5)</button>
+        <button id="btnNormal" onclick="setModo('normal')">🧠 Normal (1 al 10)</button>
+    </div>
+
+    <div class="pregunta" id="pregunta">Elige un modo</div>
+
+    <input type="number" id="respuesta" placeholder="Respuesta">
+    <br>
+
+    <button id="btnCheck" onclick="verificar()">Comprobar</button>
+
+    <div class="resultado" id="resultado"></div>
+    <div class="puntos" id="puntos">Puntos: 0</div>
+    <div class="final" id="final"></div>
+
+    <button id="btnReiniciar" onclick="reiniciar()" style="display:none;">🔁 Jugar otra vez</button>
+</div>
+
+<script>
+    let num1, num2;
+    let score = 0;
+    let max = 10;
+    let preguntas = 0;
+    const totalPreguntas = 10;
+
+    function setModo(modo) {
+        score = 0;
+        preguntas = 0;
+        document.getElementById("puntos").textContent = "Puntos: 0";
+        document.getElementById("final").textContent = "";
+
+        if (modo === 'facil') {
+            max = 5;
+            document.getElementById("btnNormal").disabled = true;
+        } else {
+            max = 10;
+            document.getElementById("btnFacil").disabled = true;
+        }
+
+        nuevaPregunta();
+    }
+
+    function nuevaPregunta() {
+        if (preguntas >= totalPreguntas) {
+            mostrarFinal();
+            return;
+        }
+
+        num1 = Math.floor(Math.random() * max) + 1;
+        num2 = Math.floor(Math.random() * max) + 1;
+
+        document.getElementById("pregunta").textContent =
+            `Pregunta ${preguntas + 1} de ${totalPreguntas}: ¿Cuánto es ${num1} × ${num2}?`;
+
+        document.getElementById("respuesta").value = "";
+        document.getElementById("respuesta").focus();
+    }
+
+    function verificar() {
+        const respuesta = parseInt(document.getElementById("respuesta").value);
+        const correcto = num1 * num2;
+
+        if (respuesta === correcto) {
+            document.getElementById("resultado").textContent = "✅ ¡Muy bien!";
+            score++;
+        } else {
+            document.getElementById("resultado").textContent =
+                `❌ Es ${correcto}`;
+        }
+
+        preguntas++;
+        document.getElementById("puntos").textContent = "Puntos: " + score;
+
+        setTimeout(nuevaPregunta, 1000);
+    }
+
+    function mostrarFinal() {
+        document.getElementById("pregunta").textContent = "🎉 ¡Juego terminado!";
+        document.getElementById("resultado").textContent = "";
+        document.getElementById("final").textContent =
+            `Obtuviste ${score} de ${totalPreguntas} puntos ⭐`;
+
+        document.getElementById("btnCheck").style.display = "none";
+        document.getElementById("respuesta").style.display = "none";
+        document.getElementById("btnReiniciar").style.display = "inline-block";
+    }
+
+    function reiniciar() {
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
